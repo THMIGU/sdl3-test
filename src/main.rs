@@ -1,3 +1,4 @@
+use sdl3::rect::Rect;
 use sdl3::{event::Event, pixels::Color};
 use std::thread::sleep;
 use std::time::Duration;
@@ -37,6 +38,16 @@ fn main() {
 
 		canvas.set_draw_color(Color::RGB(r, g, b));
 		canvas.clear();
+
+		let mut square = Rect::new(0, 0, 100, 100);
+		let center = square.center();
+		square.set_x(center.x);
+		square.set_y(center.y);
+
+		canvas.set_draw_color(Color::RGB(255, 0, 0));
+		canvas
+			.fill_rect(square)
+			.unwrap();
 
 		for event in event_pump.poll_iter() {
 			match event {
