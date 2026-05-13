@@ -1,7 +1,5 @@
-use sdl3::rect::Rect;
 use sdl3::{event::Event, pixels::Color};
-use std::thread::sleep;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 fn main() {
 	let sdl_context = sdl3::init().unwrap();
@@ -25,29 +23,15 @@ fn main() {
 		.event_pump()
 		.unwrap();
 
-	let mut frames: u128 = 0;
+	let mut last_frame = Instant::now();
+	let mut accumulator = Duration::new(0, 0);
+
+	let tick_time = Duration::from_secs_f64(1.0 / 120.0);
 
 	'running: loop {
-		frames += 1;
-
-		let t = frames as f32 * 0.02;
-
-		let r = ((t.sin() * 0.5 + 0.5) * 255.0) as u8;
-		let g = (((t + 2.094).sin() * 0.5 + 0.5) * 255.0) as u8;
-		let b = (((t + 4.188).sin() * 0.5 + 0.5) * 255.0) as u8;
-
-		canvas.set_draw_color(Color::RGB(r, g, b));
-		canvas.clear();
-
-		let mut square = Rect::new(0, 0, 100, 100);
-		let center = square.center();
-		square.set_x(center.x);
-		square.set_y(center.y);
-
-		canvas.set_draw_color(Color::RGB(255, 0, 0));
-		canvas
-			.fill_rect(square)
-			.unwrap();
+		let now = Instant::now();
+		accumulator += now.duration_since(last_frame);
+		last_frame = now;
 
 		for event in event_pump.poll_iter() {
 			match event {
@@ -58,8 +42,14 @@ fn main() {
 			}
 		}
 
+		while accumulator >= tick_time {
+			println!("Tick!");
+			accumulator -= tick_time;
+		}
+
+		canvas.clear();
 		canvas.present();
 
-		sleep(Duration::from_millis(1000 / 60));
+		println!("Render!")
 	}
 }
