@@ -1,4 +1,4 @@
-use sdl3::{event::Event, pixels::Color, rect::Rect};
+use sdl3::{event::Event, pixels::Color};
 use std::time::{Duration, Instant};
 
 const TICK_RATE: f64 = 120.0;
@@ -15,38 +15,82 @@ impl Vec2 {
 			y,
 		}
 	}
+
+	fn set(&mut self, x: f64, y: f64) -> &mut Self {
+		self.x = x;
+		self.y = y;
+		self
+	}
+
+	fn add(&mut self, other: &Vec2) -> &mut Self {
+		self.x += other.x;
+		self.y += other.y;
+		self
+	}
+}
+
+struct Ball {
+	pos: Vec2,
+	vel: Vec2,
+}
+
+impl Ball {
+	fn new() -> Self {
+		Self {
+			pos: Vec2::new(0.0, 0.0),
+			vel: Vec2::new(0.0, 0.0),
+		}
+	}
+}
+
+struct Game {
+	ticks: u64,
+	ball: Ball,
+}
+
+impl Game {
+	fn new() -> Self {
+		Self {
+			ticks: 0,
+			ball: Ball::new(),
+		}
+	}
+
+	fn update(&mut self) {
+		self.ticks += 1;
+
+		self.ball
+			.pos
+			.add(&self.ball.vel);
+	}
 }
 
 fn main() {
+	let mut game = Game::new();
+	game.ball
+		.vel
+		.set(1.0, 0.0);
+
 	let sdl_context = sdl3::init().unwrap();
 	let video_subsystem = sdl_context
 		.video()
 		.unwrap();
 
 	let window = video_subsystem
-		.window("sdl3-test", 800, 600)
+		.window("sdl3-test", 600, 600)
 		.position_centered()
 		.build()
 		.unwrap();
 
 	let mut canvas = window.into_canvas();
 
-	canvas.set_draw_color(Color::RGB(255, 0, 0));
-	canvas.clear();
-	canvas.present();
-
 	let mut event_pump = sdl_context
 		.event_pump()
 		.unwrap();
 
-	let mut cube_pos = Vec2::new(0.0, 0.0);
-
 	let mut last_frame = Instant::now();
 	let mut accumulator = Duration::new(0, 0);
-
 	let tick_time = Duration::from_secs_f64(1.0 / TICK_RATE);
-
-	let mut ticks: u64 = 0;
 
 	'running: loop {
 		let now = Instant::now();
@@ -63,25 +107,13 @@ fn main() {
 		}
 
 		while accumulator >= tick_time {
-			ticks += 1;
-			update_tick(ticks, &mut cube_pos);
+			game.update();
 			accumulator -= tick_time;
 		}
 
-		canvas.set_draw_color(Color::RGB(255, 0, 0));
+		canvas.set_draw_color(Color::BLACK);
 		canvas.clear();
-
-		canvas.set_draw_color(Color::RGB(0, 255, 0));
-		let rect = Rect::new(cube_pos.x as i32, cube_pos.y as i32, 100, 100);
-		canvas
-			.fill_rect(rect)
-			.unwrap();
 
 		canvas.present();
 	}
-}
-
-fn update_tick(ticks: u64, cube_pos: &mut Vec2) {
-	cube_pos.x = (ticks as f64 / 100.0).cos() * 350.0 + 350.0;
-	cube_pos.y = (ticks as f64 / 100.0).sin() * 250.0 + 250.0;
 }
