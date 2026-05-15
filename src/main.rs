@@ -27,10 +27,10 @@ impl Game {
 			ticks: 0,
 			ball: Ball::new(),
 			walls: vec![
-				Rect::new(0, -1, 600, 1),
-				Rect::new(0, 601, 600, 1),
-				Rect::new(-1, 0, 1, 600),
-				Rect::new(601, 0, 1, 600),
+				Rect::new(0, -100, 600, 100),
+				Rect::new(0, 600, 600, 100),
+				Rect::new(-100, 0, 100, 600),
+				Rect::new(600, 0, 100, 600),
 			],
 		}
 	}
@@ -54,8 +54,8 @@ impl Game {
 				.hitbox
 				.has_intersection(*wall)
 			{
-				let x = wall.x.signum();
-				let y = wall.y.signum();
+				let x = -wall.x.signum();
+				let y = -wall.y.signum();
 
 				let normal = Vec2::new(x as f64, y as f64);
 
@@ -84,7 +84,7 @@ fn main() {
 	let mut game = Game::new();
 	game.ball
 		.vel
-		.set(1.5, 1.0);
+		.set(2.0, 1.0);
 
 	let sdl_context = sdl3::init().unwrap();
 	let video_subsystem = sdl_context
