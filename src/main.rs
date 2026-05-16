@@ -2,83 +2,17 @@
 
 mod assets;
 mod ball;
+mod game;
 mod vec2;
 
-use assets::Assets;
-use ball::Ball;
+use crate::assets::Assets;
+use crate::game::Game;
 use sdl3::{event::Event, pixels::Color, rect::Rect};
 use std::time::{Duration, Instant};
-
-use crate::vec2::Vec2;
 
 const TICK_RATE: f64 = 120.0;
 const W_WIDTH: u32 = 600;
 const W_HEIGHT: u32 = 600;
-
-struct Game {
-	ticks: u64,
-	ball: Ball,
-	walls: Vec<Rect>,
-}
-
-impl Game {
-	fn new() -> Self {
-		Self {
-			ticks: 0,
-			ball: Ball::new(),
-			walls: vec![
-				Rect::new(0, -100, 600, 100),
-				Rect::new(0, 600, 600, 100),
-				Rect::new(-100, 0, 100, 600),
-				Rect::new(600, 0, 100, 600),
-			],
-		}
-	}
-
-	fn update(&mut self) {
-		self.ticks += 1;
-
-		let mut next = self
-			.ball
-			.pos
-			.clone();
-		next.add_assign(self.ball.vel);
-
-		self.ball
-			.hitbox
-			.center_on(next.as_point());
-
-		for wall in &self.walls {
-			if self
-				.ball
-				.hitbox
-				.has_intersection(*wall)
-			{
-				let x = -wall.x.signum();
-				let y = -wall.y.signum();
-
-				let normal = Vec2::new(x as f64, y as f64);
-
-				self.ball.vel = self
-					.ball
-					.vel
-					.reflect(normal);
-			}
-		}
-
-		self.ball
-			.pos
-			.add_assign(self.ball.vel);
-
-		self.ball
-			.hitbox
-			.center_on(
-				self.ball
-					.pos
-					.as_point(),
-			);
-	}
-}
 
 fn main() {
 	let mut game = Game::new();
