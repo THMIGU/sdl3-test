@@ -84,7 +84,7 @@ fn main() {
 	let mut game = Game::new();
 	game.ball
 		.vel
-		.set(2.0, 1.0);
+		.set(2.5, 1.5);
 
 	let sdl_context = sdl3::init().unwrap();
 	let video_subsystem = sdl_context
@@ -92,7 +92,7 @@ fn main() {
 		.unwrap();
 
 	let window = video_subsystem
-		.window("sdl3-test", W_WIDTH, W_HEIGHT)
+		.window("Pong", W_WIDTH, W_HEIGHT)
 		.position_centered()
 		.build()
 		.unwrap();
@@ -133,6 +133,9 @@ fn main() {
 		canvas.clear();
 
 		canvas.set_draw_color(Color::WHITE);
+		canvas
+			.fill_rect(Rect::new(298, 0, 4, 600))
+			.unwrap();
 
 		canvas
 			.copy(&assets.ball_texture, None, game.ball.hitbox)
