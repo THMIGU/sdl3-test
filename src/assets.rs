@@ -6,6 +6,7 @@ use sdl3::{
 
 pub struct Assets<'a> {
 	pub ball_texture: Texture<'a>,
+	pub paddle_texture: Texture<'a>,
 }
 
 impl<'a> Assets<'a> {
@@ -13,6 +14,9 @@ impl<'a> Assets<'a> {
 		Self {
 			ball_texture: texture_creator
 				.load_texture("assets/ball.png")
+				.unwrap(),
+			paddle_texture: texture_creator
+				.load_texture("assets/paddle.png")
 				.unwrap(),
 		}
 	}

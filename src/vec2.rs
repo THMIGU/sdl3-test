@@ -20,6 +20,10 @@ impl Vec2 {
 		self
 	}
 
+	pub fn add(self, other: Vec2) -> Vec2 {
+		Vec2::new(self.x + other.x, self.y + other.y)
+	}
+
 	pub fn add_assign(&mut self, other: Vec2) -> &mut Self {
 		self.x += other.x;
 		self.y += other.y;

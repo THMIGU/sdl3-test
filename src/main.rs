@@ -3,6 +3,7 @@
 mod assets;
 mod ball;
 mod game;
+mod paddle;
 mod vec2;
 
 use crate::assets::Assets;
@@ -59,7 +60,9 @@ fn main() {
 		}
 
 		while accumulator >= tick_time {
-			game.update();
+			let keyboard = event_pump.keyboard_state();
+
+			game.update(&keyboard);
 			accumulator -= tick_time;
 		}
 
@@ -73,6 +76,13 @@ fn main() {
 
 		canvas
 			.copy(&assets.ball_texture, None, game.ball.hitbox)
+			.unwrap();
+
+		canvas
+			.copy(&assets.paddle_texture, None, game.paddle_l.hitbox)
+			.unwrap();
+		canvas
+			.copy(&assets.paddle_texture, None, game.paddle_r.hitbox)
 			.unwrap();
 
 		canvas.present();
