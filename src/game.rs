@@ -10,6 +10,8 @@ pub struct Game {
 	pub paddle_l: Paddle,
 	pub paddle_r: Paddle,
 	pub walls: Vec<Rect>,
+	pub score_l: u64,
+	pub score_r: u64,
 }
 
 impl Game {
@@ -25,6 +27,8 @@ impl Game {
 				Rect::new(-100, 0, 100, 600),
 				Rect::new(600, 0, 100, 600),
 			],
+			score_l: 0,
+			score_r: 0,
 		}
 	}
 
@@ -78,6 +82,24 @@ impl Game {
 					.ball
 					.vel
 					.reflect(normal);
+
+				if x == -1 {
+					self.score_l += 1;
+					self.ball
+						.pos
+						.set(300.0, 300.0);
+					self.ball
+						.vel
+						.set(-2.5, 0.0);
+				} else if x == 1 {
+					self.score_r += 1;
+					self.ball
+						.pos
+						.set(300.0, 300.0);
+					self.ball
+						.vel
+						.set(2.5, 0.0);
+				}
 			}
 		}
 
