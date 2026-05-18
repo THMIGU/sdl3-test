@@ -10,9 +10,9 @@ pub struct Ball {
 impl Ball {
 	pub fn new() -> Self {
 		Self {
-			pos: Vec2::new(70.0, 70.0),
+			pos: Vec2::new(300.0, 300.0),
 			vel: Vec2::new(0.0, 0.0),
-			hitbox: Rect::from_center(Point::new(70, 70), 25, 25),
+			hitbox: Rect::from_center(Point::new(300, 300), 25, 25),
 		}
 	}
 }
